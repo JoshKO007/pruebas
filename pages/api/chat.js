@@ -1,8 +1,11 @@
-import OpenAI from "openai";
+import { Configuration, OpenAIApi } from 'openai';
 
-const openai = new OpenAI({
+// Configuración de OpenAI usando la variable de entorno
+const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY,
 });
+
+const openai = new OpenAIApi(configuration);
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -12,12 +15,13 @@ export default async function handler(req, res) {
   try {
     const { message } = req.body;
 
-    const completion = await openai.chat.completions.create({
+    // Solicitar una respuesta usando el modelo de OpenAI
+    const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: message }],
     });
 
-    const reply = completion.choices[0].message.content;
+    const reply = completion.data.choices[0].message.content;
     res.status(200).json({ reply });
   } catch (error) {
     console.error(error);
