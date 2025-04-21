@@ -15,6 +15,10 @@ export default async function handler(req, res) {
   try {
     const { message } = req.body;
 
+    if (!message) {
+      return res.status(400).json({ message: 'El campo "message" es obligatorio' });
+    }
+
     // Solicitar una respuesta usando el modelo de OpenAI
     const completion = await openai.createChatCompletion({
       model: "gpt-3.5-turbo",
@@ -25,6 +29,9 @@ export default async function handler(req, res) {
     res.status(200).json({ reply });
   } catch (error) {
     console.error("Error en la API de OpenAI:", error.response?.data || error.message);
-    res.status(500).json({ reply: "Hubo un error con la API", error: error.response?.data || error.message });
+    res.status(500).json({
+      reply: "Hubo un error con la API",
+      error: error.response?.data || error.message,
+    });
   }
 }
