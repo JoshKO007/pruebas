@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     const reply = completion.data.choices[0].message.content;
     res.status(200).json({ reply });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ reply: "Hubo un error con la API" });
+    console.error("Error en la API de OpenAI:", error.response?.data || error.message);
+    res.status(500).json({ reply: "Hubo un error con la API", error: error.response?.data || error.message });
   }
 }
